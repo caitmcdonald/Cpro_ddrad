@@ -3,7 +3,7 @@
 ###### \*Pipeline adapted from ongoing projects in the Zamudio lab\*
 
 ### Pipeline overview
-1. Obtaining sequencing data
+1. [Obtaining sequencing data](#1.-obtaining-sequencing-data)
 1. Library QC
 1. Quality filtering pre-STACKS (optional)
 1. Read demultiplexing (process_radtags)
@@ -44,6 +44,7 @@ __3b. Re-run fastqc and multiqc:__ Once you've finished filtering your raw libra
 __4a. Process radtags:__ process_radtags ​is​ ​the​ ​first​ ​step​ ​in​ ​the​ STACKS ​pipeline​. It ​separate​s ​the​ ​reads​ ​based​ ​on​ ​the barcode/index​ ​combination​ ​(which corresponds ​to​ ​one​ ​individual).​ We sequence ​single-end​ ​reads. Illumina​ ​separates​ ​the​ ​reads​ ​based​ ​on​ ​their​ ​indexes,​ ​which​ ​is​ ​on​ ​the​ ​3’​ ​end​ ​of​ ​the​ ​read​ ​(adjacent to​ ​the​ ​second​ ​cut​ ​site).​ ​Within​ ​each​ ​of​ ​these​ ​index-separated​ ​files,​ ​there​ ​are​ ​several​ ​samples each​ ​indexed​ ​with​ ​a​ ​barcode.​ ​In​ ​the​ ​sequencing​ ​process,​ ​the​ ​barcode​ ​is​ ​sequenced​ ​and​ ​the​ ​sbfI cut​ ​site​ ​is​ ​adjacent​ ​to​ ​the​ ​barcode.​ process_radtags ​looks​ ​for​ ​the​ ​barcode​ ​sequences​ ​we​ ​tell​ ​it​ ​to look​ ​for,​ ​and​ ​also​ ​checks​ ​to​ ​make​ ​sure​ ​that​ ​the​ ​sbfI​ ​cut​ ​site​ ​is​ ​adjacent.​ ​
 
 You​ ​will​ ​also​ ​have​ ​to​ ​create​ ​a​ ​folder​ ​called​ ​barcodes,​ ​which​ will​ ​contain​ ​the​ ​files​ ​barcodes5.txt, barcodes6.txt,​ ​and​ ​barcodes7.txt.​ ​These​ ​files​ ​will​ ​contain​ ​the​ ​barcode​ ​sequences​ ​you​ ​used​ ​in your​ ​sequencing​ ​run,​ ​separated​ ​by​ ​length. For example:
+
     #​barcodes5.txt
     AGCCC
     GTATT
@@ -75,6 +76,14 @@ From here, you can easily determine the % of reads retained for each library by 
 
 Lower read retention may indicate library prep or sequencing errors, in which case you should troubleshoot. To improve read retention, you can follow the pre-filtering steps in \#3. You can also relax some process_radtag parameters, such as --adapter_mismatch and --barcode_dist_1. If this does not improve read retention, you can --disable_rad_check. This isn't ideal because reads without intact RAD sites will be retained, but it may be your only option.
 
+__4b. Renaming samples:__
+
+
+You can check your sample read numbers like so:
+
+for file in *.fq; do echo -n $(basename $file .fq)$'\t'; cat $file | grep '^@' | wc -l; done | { echo "individual    raw_reads"; cat -; } > sample_readcounts.txt
+
+
 ### 6. Post-STACKS analyses
 __6a. Quantify missing data:__ the amount of missing data you tolerate will vary based on your organism, sampling, and sequencing approaches. One number I've heard thrown around is to omit individuals (and variants) with >50% missing data. Another approach is to look for outliers, or individuals with a lot more missing data than all other individuals. However, many people find that omitting individuals with high missing data has no impact on their results, so it may not be necessary at all. One benefit is that it removing uninformative individuals and variants will reduce your file size and speed subsequent analyses. If you want to omit individuals with high missing data, you have a couple options:
 
@@ -84,10 +93,10 @@ __b) Remove them and re-run the entire STACKS pipeline.__ If you have individual
 
 You can use VCFtools to check missing data for each individual:
 
-    vcftools –vcf <yourdata>.vcf –missing-indv –out <yourdata>
+    vcftools --vcf <yourdata>.vcf --missing-indv --out <yourdata>
 
 From here, you can exclude individuals with a lot of missing data, and exclude variants above a missingness threshold:
 
-    vcftools –vcf <data>.vcf –remove-indv <inds> –max-missing 0.5 –recode –recode-INFO-all –out <data.noind.miss0.5> –stdout
+    vcftools --vcf <data>.vcf --remove-indv <inds> --max-missing 0.5 --recode --recode-INFO-all --out <data.noind.miss0.5> --stdout
 
 __6b. PCA:__ a good first step to explore your data is to generate a PCA.
