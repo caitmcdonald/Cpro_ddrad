@@ -3,7 +3,7 @@
 ###### \*Pipeline adapted from ongoing projects in the Zamudio lab\*
 
 ### Pipeline overview
-1. [Obtaining sequencing data](#1.-obtaining-sequencing-data)
+1. [Obtaining sequencing data](#obtaining-sequencing-data)
 1. Library QC
 1. Quality filtering pre-STACKS (optional)
 1. Read demultiplexing (process_radtags)
@@ -15,7 +15,7 @@
 
 ###### Note 2: you can implement this pipeline simply through the included code fragments. However, a more efficient approach is to use the scripts included. The script associated with each step is noted.
 
-### 1. Obtaining sequencing data
+### Obtaining sequencing data
 __1a. Download files:__ You should get an email from the sequencing facility that includes a shell script. Use this script to download libraries to the directory of your choice. Generally, this will be your CBSU home directory. From within your directory:
 
     nohup sh download.sh &
