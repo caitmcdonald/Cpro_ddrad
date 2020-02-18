@@ -8,7 +8,7 @@
 1. [Quality filtering pre-Stacks (optional)](#step-3-quality-filtering-pre-stacks)
 1. [Read demultiplexing (process_radtags)](#step-4-process-radtags-and-sample-demultiplexing)
 1. [Stacks parameter optimization (optional)](#step-5-Stacks-parameter-optimization)
-1. [Running Stacks](#step-6-run-stacks-on-full-dataset)
+1. [Running Stacks](#step-6-run-stacks-on-the-full-dataset)
 1. [Post-Stacks SNP filtering](#step-7-post-stacks-snp-filtering)
 
 ##### Note 1: This pipeline assumes that you are familiar with bash, SLURM, and are working on the Cornell BioHPC cluster. See these pages for some basics on command line, SLURM, and interacting with the Cornell compute cluster.
