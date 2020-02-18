@@ -1,15 +1,21 @@
 #!/bin/bash
-### This shell script does the following:
-### 1. Runs fastqc and multiqc on raw sequencing libraries
-### 2. Runs trimmomatic on raw sequencing libraries
-### 3. Re-runs fastqc and multiqc on trimmed sequencing libraries
 
-### Edited: 1/26/20
+######
+# This shell script does the following:
+	# 1. Runs fastqc and multiqc on raw sequencing libraries
+	# 2. Runs trimmomatic on raw sequencing libraries
+	# 3. Re-runs fastqc and multiqc on trimmed sequencing libraries
 
-mkdir /workdir/cam435/raw
-mkdir /workdir/cam435/trimmed
-export RAW=/workdir/cam435/raw
-export TRIMMED=/workdir/cam435/trimmed
+# Precondition: raw sequencing libraries 
+######
+
+# make directories and copy raw read files 
+export WORKDIR=/workdir/cam435
+mkdir $WORKDIR/raw
+export RAW=$WORKDIR/raw
+cp /home/cam435/cpro_ddrad/cpro_rawreads/* $RAW
+mkdir $WORKDIR/trimmed
+export TRIMMED=$WORKDIR/trimmed
 
 #FASTQC, RAW LIBS
 cd $RAW
