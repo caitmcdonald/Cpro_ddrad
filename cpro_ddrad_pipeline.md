@@ -5,11 +5,11 @@
 ### Pipeline overview
 1. [Obtaining sequencing data](#step-1-obtaining-sequencing-data)
 1. [Library QC](#step-2-quality-control)
-1. [Quality filtering pre-Stacks (optional)](#step-3-quality-filtering-pre-stacks-(optional))
+1. [Quality filtering pre-Stacks (optional)](#step-3-quality-filtering-pre-stacks)
 1. [Read demultiplexing (process_radtags)](#step-4-process-radtags-and-sample-demultiplexing)
 1. [Stacks parameter optimization (optional)](#step-5-Stacks-parameter-optimization)
-1. [Running Stacks](#step-6-running-stacks-on-full-dataset)
-1. [Post-Stacks SNP filtering](#post-stacks-snp-filtering)
+1. [Running Stacks](#step-6-run-stacks-on-full-dataset)
+1. [Post-Stacks SNP filtering](#step-7-post-stacks-snp-filtering)
 
 ##### Note 1: This pipeline assumes that you are familiar with bash, SLURM, and are working on the Cornell BioHPC cluster. See these pages for some basics on command line, SLURM, and interacting with the Cornell compute cluster.
 
@@ -45,7 +45,7 @@ __2a. Fastqc:__ The easiest way to assess the quality of your libraries is by us
 
 __2b. Multiqc:__ Assessing quality for each library individually can be cumbersome if you have a lot of them. Multiqc compiles fastqc results into a single .html output! This is a great way to compare quality across your libraries and look for any weird outliers.
 
-### Step 3. Quality filtering pre-Stacks (optional)
+### Step 3. Quality filtering pre-Stacks
 __3a. Quality filtering:__ If, in looking at multiqc/fastqc, you see libraries that are concerning (e.g. if your per-base sequence quality is low or you have adapter content), you may want to pre-filter before running Stacks. The Stacks quality filter parameter is very relaxed: it creates a sliding window 15% of the read length and drops a read if its average quality score within the window falls below 10. It also does NOT remove adapter contamination effectively, so if you have any adapter read-through, you'll need to remove adapter contamination BEFORE running Stacks.
 
 If you need to do pre-filtering, Trimmomatic is a good option:
@@ -126,7 +126,7 @@ Testing 5-10 parameter combinations on your full dataset would take a ton of tim
 Create a population map of these test samples (e.g. named pop_map_test.txt), formatted as in 4c.
 
 __5b. Run Stacks with varying parameter values on test samples:__
-Run the full Stacks pipeline on each parameter combination using the denovo_map.pl wrapper. You will be setting up 10-20 Stacks runs. One way to do this efficiently is to write a separate shell script for each parameter combo, and submit all jobs to a SLURM cluster (if you don't know how to use SLURM, see [*here*](slurm_scripting.md)).
+Run the full Stacks pipeline on each parameter combination using the denovo_map.pl wrapper. You will be setting up 10-20 Stacks runs. One way to do this efficiently is to write a separate shell script for each parameter combo, and submit all jobs to a SLURM cluster (if you don't know how to use SLURM, see [*here*](https://github.com/caitmcdonald/parallel_computing/blob/master/slurm_scripting.md)).
 
 In order to compare runs, we want to retain SNPs present in 80% of individuals in a population, so be sure to set populations -r 0.8. For example, testing -M 5 -n 5:
 
@@ -134,7 +134,7 @@ In order to compare runs, we want to retain SNPs present in 80% of individuals i
 
 Make sure to create a unique output directory for every Stacks run so that your output files are not overwritten!
 
-*See sample SLURM* [***script****](cpro_denovo_slurm_M4n4.sh)
+*See sample SLURM* [***script***](cpro_denovo_slurm_M4n4.sh)
 
 __5c. Extract SNP distributions:__
 Once you've finished running all parameter combinations, you need to extract the distribution of the number of SNPs per catalog locus from the populations.log.distribs file. We'll use this distribution to generate our plots in step 5d. From the directory above your output directories, you can extract these distrubtions with an awk command. For example, to extract distributions testing M1n1-M9n9:
