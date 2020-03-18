@@ -147,7 +147,7 @@ Once you've finished running all parameter combinations, you need to extract the
 __5d. Plot output and choose optimal parameters:__
 To see what parameter combinations work best, we will plot the number of total loci, polymorphic loci, SNPs, and the percent loci containing n SNPs. There is no firm cutoff or consensus on choosing parameter values, but you should be able to justify your choice. For example, look for the combination that yields a plateau in SNPs/loci retained.
 
-*See sample R* [***script***](cpro_params_test_M1n1M9n9.R)
+*See sample R* [***script***](cpro_params_test_M1n1M8n8.R)
 
 ### Step 6. Run Stacks on the full dataset
 Once you've decided on the optimal parameter values, re-run Stacks on all your samples. You can run each component of Stacks separately, or by using the wrapper denovo_map.pl.
