@@ -9,29 +9,31 @@
 
 # From these plots, you can determine the optimal values for STACKS parameters -m, -M, and -n
 
-# Precondition: .tsv (or other format) files with SNP distributions (e.g. M2_snp_distribution.tsv), generated from cpro_stacks_optimize_extract.sh
+# Precondition: .tsv (or other format) files with SNP distributions, generated from cpro_stacks_optimize_extract.sh
 
 ######
 
+library(here)
 library(dplyr)
 library(data.table)
 library(ggplot2)
 library(limma)
 library(gridExtra)
 
-setwd("/Users/caitlinannmcdonald/cpro_ddrad/cpro_03_STACKS/cpro_02_params_testing/cpro_params_compare_new/")
+here()
 
 #### Varying M and n (M1n1 to M9n9) ####
-files <- list.files(path = "/Users/caitlinannmcdonald/cpro_ddrad/cpro_03_STACKS/cpro_02_params_testing/cpro_params_compare/", pattern="*.tsv", full.names = T)
+#here("params_testing/")
+files <- list.files(pattern="*.tsv", full.names = T)
 
 # read file name
 filenames <- basename(files)
 filenames <- as.data.frame(removeExt(filenames))
-filenames <- cbind(filenames, c(1:9))
+filenames <- cbind(filenames, c(1:8))
 names(filenames) <- c("Test","M")
 
 count <- 1
-for (i in files[1:9]){
+for (i in files[1:8]){
   table <- read.delim(i, skip=1, header=T)
   table$n_loci_percent<- table$n_loci/sum(table$n_loci)
   table$m<- count
@@ -75,7 +77,6 @@ snp_table <- left_join(snp_table, filenames)
 snp_table$n_loci_percent<-snp_table$n_loci_percent*100
 snp_table$n_snps<-ifelse(snp_table$n_snps < 9, snp_table$n_snps, "9 +")
 snp_table$n_snps<-as.factor(snp_table$n_snps)
-snp_table$Test <- factor(snp_table$Test, levels=x)
 
 percent_loci<-ggplot(data = snp_table) + 
   geom_col(aes(x=n_snps, y=n_loci_percent, fill=Test), position="dodge") + 
